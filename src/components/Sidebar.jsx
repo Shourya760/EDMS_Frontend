@@ -6,9 +6,11 @@ const Sidebar = ({ isOpen, onClose }) => {
   const links = [
     { name: "Dashboard", path: "/dashboard", icon: "D" },
     { name: "Employees", path: "/employees", icon: "E" },
-    { name: "Departments", path: "/departments", icon: "T" },
-    { name: "Documents", path: "/documents", icon: "F" },
+    { name: "Departments", path: "/departments", icon: "D" },
+    { name: "Documents", path: "/documents", icon: "D" },
+    { name: "Managers", path: "/managers", icon: "M" },
     { name: "Profile", path: "/profile", icon: "P" },
+
   ];
 
   return (
@@ -33,14 +35,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             </p>
           </div>
 
-          {/* <button
-            type="button"
-            aria-label="Close sidebar"
-            onClick={onClose}
-            className="grid h-10 w-10 place-items-center rounded-lg bg-white/10 text-xl hover:bg-white/15 lg:hidden"
-          >
-            x
-          </button> */}
+
         </div>
 
         <nav className="flex flex-1 flex-col gap-2 p-5">

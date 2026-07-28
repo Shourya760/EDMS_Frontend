@@ -55,7 +55,7 @@ const Login = () => {
     } catch (error) {
       console.log("Error while Logging in: ", error);
       setError(error.response?.data?.message ||
-        "Something went wrong");
+        "Something went wrong" + error);
     } finally {
       setLoading(false);
     }

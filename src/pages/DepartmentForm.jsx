@@ -13,7 +13,7 @@ const DepartmentForm = () => {
     const [formData, setFormData] = useState({
         department_description: "",
         department_name: "",
-        department_manager: ""
+
     })
 
     const handleChange = (event) => {
@@ -51,7 +51,7 @@ const DepartmentForm = () => {
             console.log("ERROR WHILE ===>", error)
             setFormError(error.response?.data?.message ||
                 error.message ||
-                "Something went wrong"
+                "Something went wrong =>" + error
             );
         } finally {
             setLoading(false)
@@ -59,6 +59,24 @@ const DepartmentForm = () => {
 
 
 
+    }
+
+    if (Loading) {
+        return (
+            <AdminLayout>
+                <div className="flex min-h-[80vh] flex-col items-center justify-center">
+                    <div className="h-14 w-14 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600"></div>
+
+                    <h2 className="mt-6 text-xl font-semibold text-slate-800">
+                        Saving Department
+                    </h2>
+
+                    <p className="mt-2 text-sm text-slate-500">
+                        Please wait while we process your request...
+                    </p>
+                </div>
+            </AdminLayout>
+        );
     }
 
     return (
@@ -83,7 +101,7 @@ const DepartmentForm = () => {
                 <form
                     onSubmit={handleSubmit}
                     className="space-y-5">
-                        
+
                     <div>
                         <label className="mb-2 block text-sm font-medium text-slate-700">
                             Department Name
@@ -98,19 +116,7 @@ const DepartmentForm = () => {
                         />
                     </div>
 
-                     <div>
-                        <label className="mb-2 block text-sm font-medium text-slate-700">
-                            Manager
-                        </label>
-                        <input
-                            rows="4"
-                            name="department_manager"
-                            placeholder="Enter department manager"
-                            value={formData.department_manager}
-                            onChange={handleChange}
-                            className="w-full rounded-lg border border-slate-300 px-4 py-2 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                        />
-                    </div>
+
 
                     <div>
                         <label className="mb-2 block text-sm font-medium text-slate-700">
@@ -126,7 +132,7 @@ const DepartmentForm = () => {
                         />
                     </div>
 
-                   
+
 
                     <div className="flex gap-3">
                         <button

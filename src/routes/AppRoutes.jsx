@@ -10,6 +10,8 @@ import Dashboard from "../pages/Dashboard";
 import Departments from "../pages/Departments";
 import ProtectedRoute from "./ProtectedRoute";
 import DepartmentForm from "../pages/DepartmentForm";
+import Manager from "../pages/Manager";
+import EmployeeInfo from "../pages/EmployeeInfo";
 
 const AppRoutes = () => {
   return (
@@ -17,51 +19,49 @@ const AppRoutes = () => {
 
       {/* Unprodected Routes */}
 
-  
+
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
       {/* Protected Routes */}
-      
+
+      <Route path="/managers" element={
+        <ProtectedRoute>
+          <Manager />
+        </ProtectedRoute>} />
       <Route path="/dashboard" element={
         <ProtectedRoute>
           <Dashboard />
         </ProtectedRoute>} />
-
       <Route path="/departments" element={
         <ProtectedRoute>
           <Departments />
-        </ProtectedRoute>
-      } />
-
+        </ProtectedRoute>} />
       <Route path="/departments/new" element={
         <ProtectedRoute>
           <DepartmentForm />
-        </ProtectedRoute>
-      } />
-
+        </ProtectedRoute>} />
       <Route path="/profile" element={
         <ProtectedRoute>
           <Profile />
         </ProtectedRoute>} />
-
       <Route path="/employees" element={
         <ProtectedRoute>
           <Employees />
         </ProtectedRoute>} />
-
       <Route path="/employees/new" element={
         <ProtectedRoute>
           <EmployeeForm />
         </ProtectedRoute>} />
-
+      <Route path="/employees/:id" element={
+        <ProtectedRoute>
+          <EmployeeInfo />
+        </ProtectedRoute>} />
       <Route path="/documents" element={
         <ProtectedRoute>
           <Documents />
-        </ProtectedRoute>
-      } />
-
+        </ProtectedRoute>} />
       <Route
         path="*"
         element={
@@ -84,9 +84,7 @@ const AppRoutes = () => {
                 Go Back
               </button>
             </div>
-          </div>
-        }
-      />
+          </div>} />
     </Routes>
   );
 };

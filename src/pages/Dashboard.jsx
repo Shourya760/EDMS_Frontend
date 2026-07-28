@@ -160,7 +160,6 @@ const Dashboard = () => {
               <thead>
                 <tr className="border-b border-slate-200 text-left text-slate-500">
                   <th className="py-3 font-medium">Name</th>
-                  <th className="py-3 font-medium">Department</th>
                   <th className="py-3 font-medium">Status</th>
                 </tr>
               </thead>
@@ -171,7 +170,6 @@ const Dashboard = () => {
                   <tr key={employee._id} className="border-b border-slate-100">
                     <td className="py-3 font-medium text-slate-900">
                       {employee.name ?? "Unknown"}                    </td>
-                    <td className="py-3 text-slate-600">{employee.department}</td>
                     <td className="py-3">
                       <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
                         {employee.status ? "Active" : "Inactive"}

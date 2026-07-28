@@ -16,9 +16,10 @@ const Departments = () => {
         setLoading(true);
         const departments = await fetchAllDepartments();
         setDepartmentData(departments.data);
+        console.log(departments.data)
       } catch (error) {
         console.log(error);
-      }finally{
+      } finally {
         setLoading(false);
       }
     };
@@ -49,7 +50,6 @@ const Departments = () => {
             <tr>
               <th className="text-left p-4">Name</th>
               <th className="text-left p-4">Manager</th>
-              <th className="text-left p-4">Employees</th>
               <th className="text-left p-4">Description</th>
             </tr>
           </thead>
@@ -73,8 +73,7 @@ const Departments = () => {
                   <td className="p-4 font-medium text-slate-950">
                     {department.department_name}
                   </td>
-                  <td className="p-4 text-slate-600">{department.department_manager}</td>
-                  <td className="p-4 text-slate-600">{department.employees}</td>
+                  <td className="p-4 text-slate-600">{department.department_manager_id?.name || "..."}</td>
                   <td className="p-4 text-slate-600">{department.department_description}</td>
                 </tr>
               ))

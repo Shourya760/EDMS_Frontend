@@ -1,41 +1,76 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminLayout from "../layouts/AdminLayout";
-// import { departments } from "../data/mockData";
 import api from "../api/axios";
-import { fetchAllDepartments } from "../services/departmentservices";
-
 
 
 const EmployeeForm = () => {
   const navigate = useNavigate();
-
+  const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
   const [Loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
-  const [departmentData, setDepartmentData] = useState([]);
 
 
+  const [currentDocument, setCurrentDocument] = useState(
+    {
+      type: "",
+      file: null,
+    });
+
+  const [documents, setDocuments] = useState([]);
+  const documentOptions = [
+    "10th Marksheet",
+    "12th Marksheet",
+    "Aadhar Card",
+    "PAN Card",
+  ];
+  const availableDocumentOptions = documentOptions.filter(
+    (option) => !documents.some((doc) => doc.type === option)
+  );
+
+  const allDocumentsAdded = availableDocumentOptions.length === 0;
 
 
+  const handleDeleteDocument = (index) => {
+    setDocuments((prev) => prev.filter((_, i) => i !== index));
+  };
+  const handleDocumentTypeChange = (e) => {
+    setCurrentDocument({
+      ...currentDocument,
+      type: e.target.value,
+    });
+  };
+  const handleDocumentFileChange = (e) => {
+    setCurrentDocument({
+      ...currentDocument,
+      file: e.target.files[0],
+    });
+  };
+  const handleAddDocument = () => {
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const response = await fetchAllDepartments();
-        setDepartmentData(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    if (!currentDocument.type || !currentDocument.file) {
+      alert("Please select document type and file.");
+      return;
+    }
 
-    loadData();
-  }, []);
+    setDocuments((prev) => [
+      ...prev,
+      currentDocument,
+    ]);
+
+    // Reset inputs
+    setCurrentDocument({
+      type: "",
+      file: null,
+    });
+  };
+
+
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    department: "",
     designation: "",
     joining_date: "",
     address: "",
@@ -70,25 +105,46 @@ const EmployeeForm = () => {
 
       const data = new FormData();
 
-      console.log("form data: ", formData)
-
       data.append("name", formData.name);
       data.append("email", formData.email);
       data.append("phone", formData.phone);
-      data.append("department", formData.department);
       data.append("designation", formData.designation);
       data.append("joining_date", formData.joining_date);
       data.append("address", formData.address);
       data.append("status", formData.status);
 
+
       if (formData.profileImage) {
         data.append("profile_image", formData.profileImage);
       }
 
-      // Debug FormData
-      for (const pair of data.entries()) {
-        console.log(pair[0], pair[1]);
+      documents.forEach(doc => {
+        data.append("documents", doc.file);
+      });
+
+      data.append(
+        "documentTypes",
+        JSON.stringify(
+          documents.map(doc => ({
+            type: doc.type
+          }))
+        )
+      );
+
+      console.log("=== FormData Contents ===");
+      for (const [key, value] of data.entries()) {
+        if (value instanceof File) {
+          console.log(`${key}:`, {
+            name: value.name,
+            size: value.size,
+            type: value.type,
+          });
+        } else {
+          console.log(`${key}:`, value);
+        }
       }
+
+
 
       const response = await api.post("/employee", data,
         {
@@ -99,7 +155,7 @@ const EmployeeForm = () => {
       );
 
       if (response.status) {
-        console.log("Employee Added:", response.data);
+        // console.log("Employee Added:", response.data);
         window.alert("Employee Created")
         navigate(-1);
 
@@ -111,8 +167,7 @@ const EmployeeForm = () => {
       console.log("ERROR WHILE ===>", error)
       setFormError(error.response?.data?.message ||
         error.message ||
-        "Something went wrong"
-      );
+        "Something went wrong =>" + error);
     } finally {
       setLoading(false)
     }
@@ -135,11 +190,11 @@ const EmployeeForm = () => {
       </AdminLayout>
     );
   }
-
-
   return (
     <AdminLayout>
       <div className="mx-auto max-w-4xl">
+
+        {/* Header */}
         <div className="mb-6">
           <p className="text-sm font-medium text-blue-700">Employee records</p>
           <h1 className="text-3xl font-bold text-slate-950">Add Employee</h1>
@@ -156,12 +211,12 @@ const EmployeeForm = () => {
           </div>
         )}
 
-
-
+        {/* From */}
         <form
           onSubmit={handleSubmit}
           className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
         >
+          {/* Information Section */}
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <label className="block">
               <span className="mb-2 block text-sm font-medium text-slate-700">
@@ -207,24 +262,6 @@ const EmployeeForm = () => {
               />
             </label>
 
-            <label className="block">
-              <span className="mb-2 block text-sm font-medium text-slate-700">
-                Department
-              </span>
-              <select
-                name="department"
-                value={formData.department}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-slate-300 px-4 py-2 outline-none focus:border-blue-600"
-              >
-                <option value="">Select department</option>
-                {departmentData.map((department) => (
-                  <option key={department._id} value={department.name}>
-                    {department.department_name}
-                  </option>
-                ))}
-              </select>
-            </label>
 
             <label className="block">
               <span className="mb-2 block text-sm font-medium text-slate-700">
@@ -267,13 +304,18 @@ const EmployeeForm = () => {
               />
 
             </label>
-            <label className="block flex  justify-between" >
-              <span className="mb-2 block text-sm font-medium text-slate-700">Status</span>
+            <label className="flex items-center justify-between rounded-lg border border-slate-300 px-4 py-3">
+              <span className="text-sm font-medium text-slate-700">
+                Status
+              </span>
+
               <input
                 type="checkbox"
                 name="status"
                 checked={formData.status}
-                onChange={handleChange} ></input>
+                onChange={handleChange}
+                className="h-4 w-4"
+              />
             </label>
 
 
@@ -291,26 +333,110 @@ const EmployeeForm = () => {
               />
             </label>
           </div>
+          {/* Documents Section */}
+          <div className="mt-6">
+            <h2 className="mb-4 text-lg font-semibold text-slate-800">
+              Documents
+            </h2>
+            {/* Add Document */}
+            <div className={"mb-6 rounded-lg border  border-slate-200 bg-white p-4 "}>
+              <h3 className="mb-3 font-medium text-slate-700">
+                Add Document
+              </h3>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <button
-              type="submit"
-              disabled={Loading}
-              className="rounded-lg bg-blue-700 px-5 py-2.5 font-semibold text-white hover:bg-blue-800"
-            >
-              Save Employee
-            </button>
+              <div className="flex gap-3 ">
+                <select
+                  name="type"
+                  disabled={allDocumentsAdded}
+                  value={currentDocument.type}
+                  onChange={handleDocumentTypeChange}
+                  className="rounded border px-3 py-2"
+                >
+                  <option value="">Select Document</option>
+
+                  {availableDocumentOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+
+                <input
+                  type="file"
+                  name="file"
+                  onChange={handleDocumentFileChange}
+                  disabled={allDocumentsAdded}
+                  className="rounded border px-3 py-2"
+                />
+
+                <button
+                  type="button"
+                  disabled={allDocumentsAdded}
+                  onClick={handleAddDocument}
+                  className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+            {/* Added Documents */}
+            <div className="rounded-lg border border-slate-200 bg-white p-4">
+              <h3 className="mb-3 font-medium text-slate-700">
+                Added Documents
+              </h3>
+
+              {documents.length === 0 ? (
+                <p className="text-slate-500">No documents added.</p>
+              ) : (
+                <div className="space-y-2">
+                  {documents.map((doc, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between rounded border px-3 py-2"
+                    >
+                      <div>
+                        <p className="font-medium">{doc.type}</p>
+                        <p className="text-sm text-slate-500">
+                          {doc.file.name}
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteDocument(index)}
+                        className="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          {/* submit or delete */}
+          <div className="mt-8 flex justify-end gap-3">
             <button
               type="button"
               onClick={() => navigate("/employees")}
-              className="rounded-lg border border-slate-300 px-5 py-2.5 font-semibold text-slate-700 hover:bg-slate-100"
+              className="rounded-lg border border-slate-300 px-5 py-2 font-medium text-slate-700 hover:bg-slate-100 transition"
             >
               Cancel
             </button>
+
+            <button
+              type="submit"
+              disabled={Loading}
+              className="rounded-lg bg-blue-600 px-5 py-2 font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 transition"
+            >
+              {Loading ? "Saving..." : "Save Employee"}
+            </button>
           </div>
         </form>
-      </div>
-    </AdminLayout>
+
+
+      </div >
+    </AdminLayout >
   );
 };
 
