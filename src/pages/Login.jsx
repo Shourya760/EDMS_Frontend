@@ -4,7 +4,6 @@ import api from "../api/axios";
 
 const Login = () => {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,8 +17,7 @@ const Login = () => {
     if (token) {
       navigate("/dashboard")
     }
-  }
-  )
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -54,12 +52,17 @@ const Login = () => {
       }
     } catch (error) {
       console.log("Error while Logging in: ", error);
-      setError(error.response?.data?.message ||
-        "Something went wrong" + error);
+      setError(
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong"
+      )
     } finally {
       setLoading(false);
     }
   };
+
+
 
   return (
     <div className="grid min-h-screen place-items-center bg-slate-100 px-4 py-10">

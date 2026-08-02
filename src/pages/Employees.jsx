@@ -24,11 +24,9 @@ const Employees = () => {
         console.log(error);
       }
     };
-
-
-
     loadData();
   }, []);
+
 
 
 
@@ -42,8 +40,6 @@ const Employees = () => {
     return matchesSearch;
 
   });
-
-
 
 
   return (
@@ -94,7 +90,6 @@ const Employees = () => {
                 className="cursor-pointer border-t border-slate-200 hover:bg-slate-50"
                 onClick={() => navigate(`/employees/${employee._id}`)}
               >
-
                 <td className="p-4 font-medium text-slate-950">
                   <div className="flex items-center gap-2">
                     <span>{employee.name || "UNKNOWN"}</span>
@@ -106,11 +101,14 @@ const Employees = () => {
                     )}
                   </div>
                 </td>
-
                 <td className="p-4 text-slate-600">{employee.email}</td>
                 <td className="p-4 text-slate-600">{employee.designation}</td>
                 <td className="p-4">
-                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+                  <span className={`mt-3 inline-block rounded-full px-4 py-1 text-sm font-medium ${employee.status
+                    ? "bg-emerald-50 text-emerald-700"
+                    : "bg-red-50 text-red-700"
+                    }`}
+                  >
                     {employee.status ? "Active" : "Inactive"}
                   </span>
                 </td>
@@ -129,7 +127,7 @@ const Employees = () => {
 
       </div>
 
-    </AdminLayout>
+    </AdminLayout >
   );
 };
 

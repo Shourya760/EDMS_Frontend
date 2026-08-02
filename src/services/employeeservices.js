@@ -6,6 +6,14 @@ export const fetchEmployeeData = async () => {
 };
 
 export const fetchOneEmployeeData = async (id) => {
-  const response = await api.get("/getoneemployee", {params: { id }});
+  const response = await api.get("/getoneemployee", { params: { id } });
   return response.data;
 }
+
+export const updateEmployeeData = async (employee_id, data) => {
+  const response = await api.patch("/updateemployee", {
+    employee_id,
+    data,
+  });
+  return response;
+};

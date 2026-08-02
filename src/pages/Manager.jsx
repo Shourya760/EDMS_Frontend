@@ -12,7 +12,7 @@ export default function Managers() {
     const [departmentData, setDepartmentData] = useState([]);
     const [managerData, setManagerData] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [Loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [FormError, setFormError] = useState("");
     const [formData, setFormData] = useState({
         department_id: "",
@@ -58,7 +58,6 @@ export default function Managers() {
             setLoading(true);
             setFormError(false);
 
-
             const response = await api.post("/addmanager", formData);
 
             if (response.status) {
@@ -85,7 +84,7 @@ export default function Managers() {
     };
 
 
-    if (Loading) {
+    if (loading) {
         return (
             <AdminLayout>
                 <div className="flex min-h-[80vh] flex-col items-center justify-center">
@@ -116,16 +115,14 @@ export default function Managers() {
                     </h1>
                 </div>
 
+
                 <button
                     onClick={() => setShowModal(true)}
                     className="rounded-lg bg-blue-700 px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-blue-800 "
-
                 >
                     Add Manager
                 </button>
             </div>
-
-
 
             <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
                 <table className="w-full min-w-[720px] text-sm">
@@ -138,35 +135,45 @@ export default function Managers() {
                             <th className="p-4 text-left">
                                 Department
                             </th>
-
-
                         </tr>
                     </thead>
 
                     <tbody>
-
-                        {managerData.map((item) => (
-                            <tr
-                                key={item._id}
-                                className="border-t border-slate-200 hover:bg-slate-50"
-                            >
-                                <td className="p-4">
-                                    {item.employee_id?.name || "-"}
+                        {loading ? (
+                            <tr>
+                                <td
+                                    colSpan="2"
+                                    className="p-4 text-center text-slate-500"
+                                >
+                                    Loading departments...
                                 </td>
-                                <td className="p-4">
-                                    {item.department_id?.department_name || "-"}
-                                </td>
-
-
                             </tr>
-                        ))}
+                        ) : (
+                            managerData.map((item) => (
+                                <tr
+                                    key={item._id}
+                                    className="border-t border-slate-200 hover:bg-slate-50"
+                                >
+                                    <td className="p-4">
+                                        {item.employee_id?.name || "-"}
+                                    </td>
+                                    <td className="p-4">
+                                        {item.department_id?.department_name || "-"}
+                                    </td>
+                                </tr>
+                            ))
 
+                        )}
+                        {!loading && managerData.length === 0 && (
+                            <tr >
+                                <td className="border-t border-slate-200 p-4 text-sm text-slate-500">No Managers Found.</td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
 
             {/* Modal */}
-
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 ">
 

@@ -139,7 +139,7 @@ const Dashboard = () => {
       </div>
 
 
-      <div className="mt-6 grid grid-cols-1 gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+      <div className="mt-6  grid-cols-1 gap-5 xl:grid-cols-[1.15fr_0.85fr]">
         <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -164,7 +164,6 @@ const Dashboard = () => {
                 </tr>
               </thead>
 
-
               <tbody>
                 {employeeData.slice(-3).map((employee) => (
                   <tr key={employee._id} className="border-b border-slate-100">
@@ -179,12 +178,11 @@ const Dashboard = () => {
                 ))}
               </tbody>
 
-
             </table>
           </div>
         </section>
 
-        <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        {/* <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-sm font-medium text-blue-700">Files</p>
@@ -217,7 +215,7 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
-        </section>
+        </section> */}
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-3">

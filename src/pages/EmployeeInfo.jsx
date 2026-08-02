@@ -2,35 +2,34 @@ import { useEffect, useState } from "react";
 import AdminLayout from "../layouts/AdminLayout"
 import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { fetchOneEmployeeData } from "../services/employeeservices";
+import { fetchOneEmployeeData, updateEmployeeData, } from "../services/employeeservices";
 import api from "../api/axios";
 
 
 const EmployeeInfo = () => {
-
-
     const { id } = useParams();
     const [EmployeeInfo, SetEmployeeInfo] = useState("");
+    const [EmployeeDoc, SetEmployeeDoc] = useState("");
     const [ActiveState, useActiveState] = useState(false);
     const [Loading, setLoading] = useState(false);
     const navigate = useNavigate()
 
     useEffect(() => {
-
         const LoadData = async () => {
             try {
                 console.log(id);
                 const Info = await fetchOneEmployeeData(id);
-                SetEmployeeInfo(Info.data);
-                console.log(EmployeeInfo);
-
+                SetEmployeeInfo(Info.data.employee_data);
+                SetEmployeeDoc(Info.data.employee_document);
             } catch (error) {
                 console.log(error);
             }
         }
         LoadData();
-
     }, [id, ActiveState]);
+
+    console.log("Employee Data", EmployeeInfo);
+    console.log("Employee Doc", EmployeeDoc);
 
     //geting initials of the name 
     const initials = EmployeeInfo?.name
@@ -45,16 +44,13 @@ const EmployeeInfo = () => {
     // Handeling Delete
     const handleDelete = async (event) => {
         event.preventDefault();
-
         const confirmed = window.confirm(
             "Are you sure you want to delete this employee?"
         );
-
         if (!confirmed) return;
         try {
             setLoading(true)
             console.log(EmployeeInfo._id)
-
             const response = await api.delete("/deleteemployee",
                 {
                     data: {
@@ -62,7 +58,6 @@ const EmployeeInfo = () => {
                     },
                 });
             if (response.status) {
-                window.alert("Employee Deleted")
                 navigate(-1);
             }
         } catch (error) {
@@ -71,7 +66,31 @@ const EmployeeInfo = () => {
             setLoading(false)
         }
     }
-    // console.log(EmployeeInfo)
+
+
+    //Update info
+    const handleUpdate = async (updatedFields) => {
+        try {
+            console.log(EmployeeInfo._id, updatedFields)
+            console.log(updateEmployeeData);
+            console.log(typeof updateEmployeeData);
+
+            const response = await updateEmployeeData(
+                EmployeeInfo._id,
+                updatedFields
+            );
+
+            console.log("response", response);
+
+            SetEmployeeInfo((prev) => ({
+                ...prev,
+                ...updatedFields,
+            }));
+        } catch (error) {
+            console.log("Error in upadating Employee => ", error)
+        }
+    };
+
 
     // This will come while loading
     if (Loading) {
@@ -91,6 +110,7 @@ const EmployeeInfo = () => {
             </AdminLayout>
         );
     }
+
 
     return (
         <AdminLayout>
@@ -136,8 +156,18 @@ const EmployeeInfo = () => {
 
                 <div className="flex flex-col items-center border-b border-slate-200 p-8 md:flex-row md:items-center md:gap-6">
 
-                    <div className="flex h-28 w-28 items-center justify-center rounded-full bg-blue-100 text-4xl font-bold text-blue-700">
-                        {initials}
+                    <div className="flex h-28 w-28 items-center justify-center rounded-full overflow-hidden bg-blue-100">
+                        {EmployeeInfo.profile_image ? (
+                            <img
+                                src={EmployeeInfo.profile_image} // image URL from backend
+                                alt={EmployeeInfo.name}
+                                className="h-full w-full object-cover"
+                            />
+                        ) : (
+                            <span className="text-4xl font-bold text-blue-700">
+                                {initials}
+                            </span>
+                        )}
                     </div>
 
                     <div className="mt-4 md:mt-0">
@@ -145,22 +175,23 @@ const EmployeeInfo = () => {
                             {EmployeeInfo.name ? EmployeeInfo.name : "Unknown"}
                         </h2>
 
-
-
-
-
                         <p className="mt-1 text-slate-500">
                             {EmployeeInfo.designation}
                         </p>
 
-                        <span
+                        <button
+                            onClick={() => {
+                                handleUpdate({
+                                    status: !EmployeeInfo.status
+                                })
+                            }}
                             className={`mt-3 inline-block rounded-full px-4 py-1 text-sm font-medium ${EmployeeInfo.status
                                 ? "bg-emerald-50 text-emerald-700"
                                 : "bg-red-50 text-red-700"
                                 }`}
                         >
                             {EmployeeInfo.status ? "Active" : "Inactive"}
-                        </span>
+                        </button>
                     </div>
                 </div>
 
@@ -227,6 +258,51 @@ const EmployeeInfo = () => {
                         </p>
                     </div>
                 </div>
+            </div>
+
+            {/* Documents */}
+            <div className="mt-8 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                <h3 className="text-xl font-semibold text-slate-900">
+                    Documents
+                </h3>
+
+                <p className="mt-1 text-sm text-slate-500">
+                    Uploaded employee documents
+                </p>
+
+                {EmployeeDoc?.length > 0 ? (
+                    <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                        {EmployeeDoc.map((doc) => (
+                            <a
+                                key={doc._id}
+                                href={doc.document_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group rounded-xl border border-slate-200 bg-white p-5 transition-all duration-300 hover:border-blue-300 hover:shadow-md"
+                            >
+                                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 text-2xl transition group-hover:bg-blue-100">
+                                    📄
+                                </div>
+
+                                <h4 className="mt-4 text-lg font-semibold text-slate-900">
+                                    {doc.document_type}
+                                </h4>
+
+                                <p className="mt-1 truncate text-sm text-slate-500">
+                                    {doc.document_name}
+                                </p>
+
+                                <div className="mt-5 text-sm font-medium text-blue-600 group-hover:text-blue-700">
+                                    View Document →
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="mt-6 rounded-lg border border-dashed border-slate-300 p-8 text-center text-slate-500">
+                        No documents uploaded.
+                    </div>
+                )}
             </div>
 
             {/* Danger Zone */}
