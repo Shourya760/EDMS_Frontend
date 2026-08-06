@@ -4,29 +4,32 @@ import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { fetchOneEmployeeData, updateEmployeeData, } from "../services/employeeservices";
 import api from "../api/axios";
+import Skeleton_Loading from "../components/Skeleton_loading";
 
 
 const EmployeeInfo = () => {
     const { id } = useParams();
-    const [EmployeeInfo, SetEmployeeInfo] = useState("");
-    const [EmployeeDoc, SetEmployeeDoc] = useState("");
-    const [ActiveState, useActiveState] = useState(false);
+    const [EmployeeInfo, SetEmployeeInfo] = useState({});
+    const [EmployeeDoc, SetEmployeeDoc] = useState([]);
     const [Loading, setLoading] = useState(false);
+    const [formError, setFormError] = useState("");
     const navigate = useNavigate()
+
+    console.log(id);
 
     useEffect(() => {
         const LoadData = async () => {
             try {
-                console.log(id);
                 const Info = await fetchOneEmployeeData(id);
                 SetEmployeeInfo(Info.data.employee_data);
                 SetEmployeeDoc(Info.data.employee_document);
             } catch (error) {
-                console.log(error);
+                console.log("Error while Fatching Emplooyee Data", error);
             }
         }
         LoadData();
-    }, [id, ActiveState]);
+
+    }, [id]);
 
     console.log("Employee Data", EmployeeInfo);
     console.log("Employee Doc", EmployeeDoc);
@@ -49,7 +52,8 @@ const EmployeeInfo = () => {
         );
         if (!confirmed) return;
         try {
-            setLoading(true)
+            setLoading(true);
+            
             console.log(EmployeeInfo._id)
             const response = await api.delete("/deleteemployee",
                 {
@@ -66,51 +70,51 @@ const EmployeeInfo = () => {
             setLoading(false)
         }
     }
-
-
     //Update info
     const handleUpdate = async (updatedFields) => {
         try {
-            console.log(EmployeeInfo._id, updatedFields)
-            console.log(updateEmployeeData);
-            console.log(typeof updateEmployeeData);
+            setLoading(true);
+            setFormError("");
 
-            const response = await updateEmployeeData(
-                EmployeeInfo._id,
-                updatedFields
+            const form = new FormData();
+
+            form.append("employee_id", EmployeeInfo._id);
+
+            form.append(
+                "data",
+                JSON.stringify(updatedFields)
             );
 
-            console.log("response", response);
+            const response = await api.patch(
+                "/updateemployee",
+                form
+            );
 
-            SetEmployeeInfo((prev) => ({
-                ...prev,
-                ...updatedFields,
-            }));
+            if (response.data.success) {
+                SetEmployeeInfo((prev) => ({
+                    ...prev,
+                    ...updatedFields,
+                }));
+            }
+
         } catch (error) {
-            console.log("Error in upadating Employee => ", error)
+            console.log(error);
+
+            setFormError(
+                error.response?.data?.message ||
+                error.message ||
+                "Something went wrong."
+            );
+        } finally {
+            setLoading(false);
         }
     };
-
-
-    // This will come while loading
+    // Skeleton Loading
     if (Loading) {
         return (
-            <AdminLayout>
-                <div className="flex min-h-[80vh] flex-col items-center justify-center">
-                    <div className="h-14 w-14 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600"></div>
-
-                    <h2 className="mt-6 text-xl font-semibold text-slate-800">
-                        Saving Employee
-                    </h2>
-
-                    <p className="mt-2 text-sm text-slate-500">
-                        Please wait while we process your request...
-                    </p>
-                </div>
-            </AdminLayout>
+            <Skeleton_Loading />
         );
     }
-
 
     return (
         <AdminLayout>
@@ -135,7 +139,7 @@ const EmployeeInfo = () => {
                     </Link>
 
                     <Link
-                        to={`/employees/edit/1`}
+                        to={`/employees/edit/${EmployeeInfo._id}`}
                         className="rounded-lg bg-blue-700 px-5 py-2 text-white font-semibold hover:bg-blue-800"
                     >
                         Edit Employee
@@ -265,7 +269,6 @@ const EmployeeInfo = () => {
                 <h3 className="text-xl font-semibold text-slate-900">
                     Documents
                 </h3>
-
                 <p className="mt-1 text-sm text-slate-500">
                     Uploaded employee documents
                 </p>

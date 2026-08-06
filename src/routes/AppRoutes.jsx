@@ -12,14 +12,13 @@ import ProtectedRoute from "./ProtectedRoute";
 import DepartmentForm from "../pages/DepartmentForm";
 import Manager from "../pages/Manager";
 import EmployeeInfo from "../pages/EmployeeInfo";
+import EmployeeEdit from "../pages/EmployeeEdit";
 
 const AppRoutes = () => {
   return (
     <Routes>
 
       {/* Unprodected Routes */}
-
-
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -58,6 +57,11 @@ const AppRoutes = () => {
         <ProtectedRoute>
           <EmployeeInfo />
         </ProtectedRoute>} />
+      <Route path="/employees/edit/:id" element={
+        <ProtectedRoute>
+          <EmployeeEdit />
+        </ProtectedRoute>
+      } />
       <Route path="/documents" element={
         <ProtectedRoute>
           <Documents />

@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AdminLayout from "../layouts/AdminLayout";
 import { useState } from "react";
 import api from "../api/axios";
+import Skeleton_Loading from "../components/Skeleton_loading";
 
 
 const DepartmentForm = () => {
@@ -63,19 +64,7 @@ const DepartmentForm = () => {
 
     if (Loading) {
         return (
-            <AdminLayout>
-                <div className="flex min-h-[80vh] flex-col items-center justify-center">
-                    <div className="h-14 w-14 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600"></div>
-
-                    <h2 className="mt-6 text-xl font-semibold text-slate-800">
-                        Saving Department
-                    </h2>
-
-                    <p className="mt-2 text-sm text-slate-500">
-                        Please wait while we process your request...
-                    </p>
-                </div>
-            </AdminLayout>
+            <Skeleton_Loading />
         );
     }
 

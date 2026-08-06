@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminLayout from "../layouts/AdminLayout";
 import api from "../api/axios";
+import Skeleton_Loading from "../components/Skeleton_loading";
 
 
 const EmployeeForm = () => {
@@ -9,8 +10,6 @@ const EmployeeForm = () => {
   const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
   const [Loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
-
-
   const [currentDocument, setCurrentDocument] = useState(
     {
       type: "",
@@ -27,7 +26,6 @@ const EmployeeForm = () => {
   const availableDocumentOptions = documentOptions.filter(
     (option) => !documents.some((doc) => doc.type === option)
   );
-
   const allDocumentsAdded = availableDocumentOptions.length === 0;
 
 
@@ -52,20 +50,16 @@ const EmployeeForm = () => {
       alert("Please select document type and file.");
       return;
     }
-
     setDocuments((prev) => [
       ...prev,
       currentDocument,
     ]);
-
     // Reset inputs
     setCurrentDocument({
       type: "",
       file: null,
     });
   };
-
-
 
   const [formData, setFormData] = useState({
     name: "",
@@ -103,8 +97,10 @@ const EmployeeForm = () => {
       setLoading(true);
       setFormError("");
 
+      // creating a new from data
       const data = new FormData();
 
+      // Adding info
       data.append("name", formData.name);
       data.append("email", formData.email);
       data.append("phone", formData.phone);
@@ -117,7 +113,6 @@ const EmployeeForm = () => {
       if (formData.profileImage) {
         data.append("profile_image", formData.profileImage);
       }
-
       documents.forEach(doc => {
         data.append("documents", doc.file);
       });
@@ -130,6 +125,7 @@ const EmployeeForm = () => {
           }))
         )
       );
+
 
       console.log("=== FormData Contents ===");
       for (const [key, value] of data.entries()) {
@@ -145,7 +141,6 @@ const EmployeeForm = () => {
       }
 
 
-
       const response = await api.post("/employee", data,
         {
           headers: {
@@ -155,7 +150,6 @@ const EmployeeForm = () => {
       );
 
       if (response.status) {
-        // console.log("Employee Added:", response.data);
         window.alert("Employee Created")
         navigate(-1);
 
@@ -175,19 +169,7 @@ const EmployeeForm = () => {
 
   if (Loading) {
     return (
-      <AdminLayout>
-        <div className="flex min-h-[80vh] flex-col items-center justify-center">
-          <div className="h-14 w-14 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600"></div>
-
-          <h2 className="mt-6 text-xl font-semibold text-slate-800">
-            Saving Employee
-          </h2>
-
-          <p className="mt-2 text-sm text-slate-500">
-            Please wait while we process your request...
-          </p>
-        </div>
-      </AdminLayout>
+      <Skeleton_Loading />
     );
   }
   return (
@@ -343,7 +325,6 @@ const EmployeeForm = () => {
               <h3 className="mb-3 font-medium text-slate-700">
                 Add Document
               </h3>
-
               <div className="flex gap-3 ">
                 <select
                   name="type"

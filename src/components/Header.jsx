@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "../services/authService";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -7,7 +8,8 @@ import { getCurrentUser } from "../services/authService";
 const Header = ({ onMenuClick }) => {
 
   const [user, setUser] = useState(null);
-
+  const [email, setEmail] = useState(null);
+  const navigate = useNavigate()
 
   const getInitials = (name) => {
     if (!name) return "U";
@@ -29,6 +31,7 @@ const Header = ({ onMenuClick }) => {
         // console.log("hhhhhhh", response.data.name)
 
         setUser(response.data.name);
+        setEmail(response.data.email);
 
       } catch (error) {
         console.log("ERROR IN GETTING USER => ", error);
@@ -66,16 +69,21 @@ const Header = ({ onMenuClick }) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3"
+          onClick={() => { navigate("/profile") }}>
           <div className="grid h-10 w-10 place-items-center rounded-full bg-blue-100 text-sm font-bold text-blue-800">
             {getInitials(user)}
-            {/* u */}
+          </div>
+          <div className="flex flex-col">
+            <span className="block text-sm font-medium text-slate-700 sm:inline">
+              {user ?? "Guest"}
+            </span>
+            <span className="block text-xs font-small text-slate-400 sm:inline">
+              {email}
+            </span>
           </div>
 
-          <span className="hidden text-sm font-medium text-slate-700 sm:inline">
-            {user ?? "Guest"}
-            {/* user */}
-          </span>
+
         </div>
       </div>
     </header>
