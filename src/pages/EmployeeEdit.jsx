@@ -38,7 +38,8 @@ const EditEmployee = () => {
 
     const availableDocumentOptions = documentOptions.filter(
         (option) =>
-            !employeeDoc.some((doc) => doc.document_type === option)
+            !employeeDoc.some((doc) => doc.document_type === option) &&
+            !documents.some((doc) => doc.type === option)
     );
     const allDocumentsAdded = availableDocumentOptions.length === 0;
 
@@ -457,8 +458,8 @@ const EditEmployee = () => {
                                         <div
                                             key={doc._id}
                                             className={`flex items-center justify-between rounded-lg border p-4 transition ${deletingDocId === doc._id
-                                                    ? "animate-pulse opacity-60"
-                                                    : "hover:border-blue-300"
+                                                ? "animate-pulse opacity-60"
+                                                : "hover:border-blue-300"
                                                 }`}
                                         >
                                             <div className="flex items-center gap-3">
@@ -509,12 +510,19 @@ const EditEmployee = () => {
                                                     <p className="text-sm text-green-600">
                                                         {doc.file.name}
                                                     </p>
+
                                                 </div>
                                             </div>
 
-                                            <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
-                                                Ready to Upload
-                                            </span>
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setDocuments((prev) => prev.filter((_, i) => i !== index))
+                                                }
+                                                className="rounded bg-red-500 px-3 py-1 text-white"
+                                            >
+                                                Remove
+                                            </button>
                                         </div>
                                     ))}
                                 </div>

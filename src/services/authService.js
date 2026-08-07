@@ -18,3 +18,8 @@ export const getCurrentUser = async () => {
     const response = await api.get("/auth/profile");
     return response.data;
 };
+
+export const updateUser = async (formData) => {
+    const response = await api.patch("/auth/updateUser", formData);
+    return response.data;
+}

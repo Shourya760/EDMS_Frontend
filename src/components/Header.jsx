@@ -7,8 +7,9 @@ import { useNavigate } from "react-router-dom";
 
 const Header = ({ onMenuClick }) => {
 
-  const [user, setUser] = useState(null);
-  const [email, setEmail] = useState(null);
+  const [user, setUser] = useState("");
+  const [email, setEmail] = useState("");
+  const [profile, setProfile] = useState("");
   const navigate = useNavigate()
 
   const getInitials = (name) => {
@@ -25,22 +26,18 @@ const Header = ({ onMenuClick }) => {
   useEffect(() => {
     const loadUser = async () => {
       try {
-
         const response = await getCurrentUser();
-        // console.log("ffffff ", response)
-        // console.log("hhhhhhh", response.data.name)
 
         setUser(response.data.name);
         setEmail(response.data.email);
-
+        setProfile(response.data.profile_image);
       } catch (error) {
-        console.log("ERROR IN GETTING USER => ", error);
+        console.error("ERROR IN GETTING USER:", error);
       }
     };
 
     loadUser();
   }, []);
-
 
   return (
     <header className="border-b border-slate-200 bg-white px-4 py-4 sm:px-6">
@@ -69,21 +66,30 @@ const Header = ({ onMenuClick }) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3"
-          onClick={() => { navigate("/profile") }}>
-          <div className="grid h-10 w-10 place-items-center rounded-full bg-blue-100 text-sm font-bold text-blue-800">
-            {getInitials(user)}
-          </div>
+        <div
+          className="flex items-center gap-3 cursor-pointer"
+          onClick={() => navigate("/profile")}
+        >
+          {profile ? (
+            <img
+              src={profile}
+              alt="Profile"
+              className="w-10 h-10 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold">
+              {getInitials(user)}
+            </div>
+          )}
+
           <div className="flex flex-col">
-            <span className="block text-sm font-medium text-slate-700 sm:inline">
-              {user ?? "Guest"}
+            <span className="text-sm font-medium text-slate-700">
+              {user || "Guest"}
             </span>
-            <span className="block text-xs font-small text-slate-400 sm:inline">
+            <span className="text-xs text-slate-400">
               {email}
             </span>
           </div>
-
-
         </div>
       </div>
     </header>
