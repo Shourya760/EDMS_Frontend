@@ -1,124 +1,220 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminLayout from "../layouts/AdminLayout";
-import { documents, employees } from "../data/mockData";
-
+import { getalldocument } from "../services/documentservice";
 
 const Documents = () => {
+  const [documents, setDocuments] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const categories = ["Resume", "Aadhaar", "PAN", "Offer Letter"];
+  const categories = [
+    "10th Marksheet",
+    "12th Marksheet",
+    "Aadhar Card",
+    "PAN Card",
+  ];
+
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      try {
+        const response = await getalldocument();
+        setDocuments(response.data);
+        console.log("Response", response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchDocuments();
+  }, []);
+
+
 
   const filteredDocuments = documents.filter((doc) => {
     const matchesSearch =
-      doc.employee.toLowerCase().includes(searchText.toLowerCase()) ||
-      doc.documentName.toLowerCase().includes(searchText.toLowerCase());
+      doc.document_name
+        .toLowerCase()
+        .includes(searchText.toLowerCase()) ||
+      doc.document_type
+        .toLowerCase()
+        .includes(searchText.toLowerCase());
 
     const matchesCategory =
-      selectedCategory === "" || doc.category === selectedCategory;
+      selectedCategory === "" ||
+      doc.document_type === selectedCategory;
 
     return matchesSearch && matchesCategory;
   });
 
-
+  const getIcon = (type) => {
+    switch (type) {
+      case "PAN Card":
+        return "💳";
+      case "Aadhar Card":
+        return "🪪";
+      case "10th Marksheet":
+        return "🎓";
+      case "12th Marksheet":
+        return "📚";
+      default:
+        return "📄";
+    }
+  };
 
   return (
     <AdminLayout>
-      <div className="mb-6">
-        <p className="text-sm font-medium text-blue-700">Document vault</p>
-        <h1 className="text-3xl font-bold text-slate-950">Documents</h1>
-      </div>
+      <div className="mx-auto max-w-7xl">
 
-      <div className="mb-6 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-slate-950">
-          Upload Document
-        </h2>
+        {/* Header */}
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <select className="rounded-lg border border-slate-300 px-4 py-2.5 outline-none focus:border-blue-600">
-            <option value="">Select employee</option>
-            {employees.map((employee) => (
-              <option key={employee.id}>{employee.fullName}</option>
-            ))}
-          </select>
+        <div className="mb-8 flex items-center justify-between rounded-xl border bg-white p-6 shadow-sm">
+          <div>
+            <p className="text-sm font-medium text-blue-600">
+              Employee Management
+            </p>
 
-          <select className="rounded-lg border border-slate-300 px-4 py-2.5 outline-none focus:border-blue-600">
-            <option value="">Select category</option>
-            {categories.map((category) => (
-              <option key={category}>{category}</option>
-            ))}
-          </select>
+            <h1 className="mt-1 text-3xl font-bold text-slate-800">
+              📂 Document Vault
+            </h1>
 
-          <input
-            type="file"
-            className="rounded-lg border border-slate-300 px-4 py-2"
-          />
+            <p className="mt-2 text-slate-500">
+              Browse and manage all uploaded employee documents.
+            </p>
+          </div>
+
+          <div className="rounded-xl bg-blue-50 px-6 py-4 text-center">
+            <p className="text-sm text-slate-500">Total Documents</p>
+
+            <h2 className="text-3xl font-bold text-blue-700">
+              {filteredDocuments.length}
+            </h2>
+          </div>
         </div>
 
-        <button className="mt-4 rounded-lg bg-blue-700 px-5 py-2.5 font-semibold text-white hover:bg-blue-800">
-          Upload
-        </button>
-      </div>
+        {/* Search */}
+        <div className="mb-8 rounded-xl border bg-white p-5 shadow-sm">
+          <div className="grid gap-4 md:grid-cols-2">
 
-      <div className="mb-6 grid gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-[1fr_240px]">
-        <input
-          type="text"
-          value={searchText}
-          onChange={(event) => setSearchText(event.target.value)}
-          placeholder="Search documents..."
-          className="w-full rounded-lg border border-slate-300 px-4 py-2.5 outline-none focus:border-blue-600"
-        />
+            <input
+              type="text"
+              placeholder="🔍 Search by document name..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className="rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-blue-600"
+            />
 
-        <select
-          value={selectedCategory}
-          onChange={(event) => setSelectedCategory(event.target.value)}
-          className="w-full rounded-lg border border-slate-300 px-4 py-2.5 outline-none focus:border-blue-600"
-        >
-          <option value="">All categories</option>
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
-      </div>
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-blue-600"
+            >
+              <option value="">All Categories</option>
 
-      <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
-        <table className="w-full min-w-[760px] text-sm">
-          <thead className="bg-slate-100 text-slate-600">
-            <tr>
-              <th className="p-4 text-left">Employee</th>
-              <th className="p-4 text-left">Document</th>
-              <th className="p-4 text-left">Category</th>
-              <th className="p-4 text-left">Date</th>
-              <th className="p-4 text-left">Status</th>
-            </tr>
-          </thead>
+              {categories.map((category) => (
+                <option key={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
 
-          <tbody>
+          </div>
+        </div>
+        {/* Cards */}
+
+        {filteredDocuments.length === 0 ? (
+
+          <div className="rounded-xl border-2 border-dashed border-slate-300 bg-white py-20 text-center shadow-sm">
+
+            <div className="text-6xl">
+              📂
+            </div>
+
+            <h2 className="mt-4 text-2xl font-semibold text-slate-700">
+              No Documents Found
+            </h2>
+
+            <p className="mt-2 text-slate-500">
+              Try changing your search or filter.
+            </p>
+
+          </div>
+
+        ) : (
+
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+
             {filteredDocuments.map((doc) => (
-              <tr key={doc.id} className="border-t border-slate-200">
-                <td className="p-4 font-medium text-slate-950">
-                  {doc.employee}
-                </td>
-                <td className="p-4 text-slate-600">{doc.documentName}</td>
-                <td className="p-4 text-slate-600">{doc.category}</td>
-                <td className="p-4 text-slate-600">{doc.uploadDate}</td>
-                <td className="p-4">
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
-                    {doc.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
 
-        {filteredDocuments.length === 0 && (
-          <p className="border-t border-slate-200 p-4 text-sm text-slate-500">
-            No documents found.
-          </p>
+              <div
+                key={doc._id}
+                className="rounded-xl  bg-white p-5 shadow-sm hover:shadow-md"
+              >
+
+                <div className="mb-4 flex items-center gap-3">
+
+                  <div className="text-4xl">
+                    {getIcon(doc.document_type)}
+                  </div>
+
+                  <div>
+
+                    <h3 className="font-semibold">
+                      {doc.document_type}
+                    </h3>
+
+                    <p className="text-sm text-slate-500">
+                      Employee Email:
+                      {" "}
+                      {doc.document_name.split("_").pop()}
+                    </p>
+
+                  </div>
+
+                </div>
+
+                <div className="rounded-lg bg-slate-100 p-3">
+
+                  <p className="truncate font-medium">
+                    {doc.document_name}
+                  </p>
+
+                  <p className="mt-2 text-sm text-slate-500">
+                    Uploaded :
+                    {" "}
+                    {new Date(doc.createdAt).toLocaleDateString()}
+                  </p>
+
+                </div>
+
+                <div className="mt-5 flex gap-2">
+
+                  <a
+                    href={doc.document_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex-1 rounded-lg bg-blue-600 py-2 text-center text-white hover:bg-blue-700"
+                  >
+                    View
+                  </a>
+
+                  <a
+                    href={doc.document_url}
+                    download
+                    className="flex-1 rounded-lg border py-2 text-center hover:bg-slate-100"
+                  >
+                    Download
+                  </a>
+
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
+
         )}
+
       </div>
     </AdminLayout>
   );
