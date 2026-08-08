@@ -13,6 +13,8 @@ import DepartmentForm from "../pages/DepartmentForm";
 import Manager from "../pages/Manager";
 import EmployeeInfo from "../pages/EmployeeInfo";
 import EmployeeEdit from "../pages/EmployeeEdit";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 
 const AppRoutes = () => {
   return (
@@ -22,6 +24,9 @@ const AppRoutes = () => {
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset" element={<ResetPassword />} />
+
 
       {/* Protected Routes */}
 
@@ -60,12 +65,14 @@ const AppRoutes = () => {
       <Route path="/employees/edit/:id" element={
         <ProtectedRoute>
           <EmployeeEdit />
-        </ProtectedRoute>
-      } />
+        </ProtectedRoute>} />
       <Route path="/documents" element={
         <ProtectedRoute>
           <Documents />
         </ProtectedRoute>} />
+
+
+
       <Route
         path="*"
         element={

@@ -65,61 +65,126 @@ const Login = () => {
 
 
   return (
-    <div className="grid min-h-screen place-items-center bg-slate-100 px-4 py-10">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md rounded-lg border border-slate-200 bg-white p-8 shadow-sm"
-      >
-        <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
-          EDMS
-        </p>
-        <h1 className="mt-2 text-3xl font-bold text-slate-950">Login</h1>
-        <p className="mt-2 text-sm text-slate-500">
-          Sign in to manage employees, departments, and documents.
-        </p>
+    <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
 
-        {error ? (
-          <div className="mt-4 rounded-lg bg-red-100 p-3 text-sm text-red-700">
-            {error}
+      <div className="grid w-full max-w-5xl overflow-hidden rounded-2xl bg-white shadow-xl md:grid-cols-2">
+
+        {/* Left Side */}
+        <div className="hidden bg-blue-700 p-10 text-white md:flex md:flex-col md:justify-center">
+          <h1 className="text-4xl font-bold">
+            Employee Document
+          </h1>
+          <h2 className="mt-2 text-3xl font-bold">
+            Management System
+          </h2>
+          <p className="mt-6 text-blue-100 leading-7">
+            Manage employees, departments and documents from one
+            secure dashboard.
+          </p>
+          <div className="mt-10 space-y-4 text-blue-100">
+            <div className="flex items-center gap-3">
+              <span>✔</span>
+              <p>Employee Management</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span>✔</span>
+              <p>Document Storage</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span>✔</span>
+              <p>Department Management</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span>✔</span>
+              <p>Secure Authentication</p>
+            </div>
           </div>
-        ) : null}
+        </div>
 
+        {/* Right Side */}
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          className="mt-6 w-full rounded-lg border border-slate-300 px-4 py-2.5 outline-none focus:border-blue-600"
-          required
-          onChange={handleChange}
-          value={formData.email}
-        />
+        <div className="p-10">
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          className="mt-4 w-full rounded-lg border border-slate-300 px-4 py-2.5 outline-none focus:border-blue-600"
-          required
-          onChange={handleChange}
-          value={formData.password}
-        />
+          <div className="mb-8 text-center">
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-5 w-full rounded-lg bg-blue-700 py-2.5 font-semibold text-white hover:bg-blue-800 disabled:opacity-50"
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
+            <h2 className="text-3xl font-bold text-slate-800">
+              Welcome Back
+            </h2>
 
-        <p className="mt-5 text-center text-sm text-slate-600">
-          No account?{" "}
-          <Link to="/register" className="font-semibold text-blue-700">
-            Register
-          </Link>
-        </p>
-      </form>
+            <p className="mt-2 text-slate-500">
+              Sign in to continue
+            </p>
+
+          </div>
+
+          <form onSubmit={handleSubmit}>
+
+            {error && (
+              <div className="mb-5 rounded-lg bg-red-100 p-3 text-sm text-red-700">
+                {error}
+              </div>
+            )}
+
+            <label className="mb-2 block text-sm font-medium text-slate-700">
+              Email
+            </label>
+
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-blue-600"
+            />
+
+            <label className="mt-5 mb-2 block text-sm font-medium text-slate-700">
+              Password
+            </label>
+
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Enter your password"
+              className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-blue-600"
+            />
+
+            <div className="mt-3 flex justify-end">
+
+              <Link
+                to="/reset"
+                className="text-sm font-medium text-blue-700 hover:underline"
+              >
+                Forgot Password?
+              </Link>
+
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="mt-6 w-full rounded-lg bg-blue-700 py-3 font-semibold text-white transition hover:bg-blue-800 disabled:opacity-50"
+            >
+              {loading ? "Signing In..." : "Sign In"}
+            </button>
+
+          </form>
+
+          <div className="mt-6 text-center text-sm text-slate-600">
+
+            Don't have an account?{" "}
+
+            <Link
+              to="/register"
+              className="font-semibold text-blue-700 hover:underline"
+            >
+              Register
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

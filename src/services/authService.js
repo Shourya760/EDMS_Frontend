@@ -23,3 +23,12 @@ export const updateUser = async (formData) => {
     const response = await api.patch("/auth/updateUser", formData);
     return response.data;
 }
+
+export const updatePassword = async (formData) => {
+    const response = await api.patch("/auth/updatePassword", formData);
+    return response.data;
+}
+export const resetPassword = async (formData) => {
+    const response = await api.post("/auth/forgotPassword", formData);
+    return response.data;
+}
