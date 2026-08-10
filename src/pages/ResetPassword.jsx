@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { resetPassword, updatePassword } from "../services/authService";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: ""
     })
     const [formError, setFormError] = useState("");
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
             setLoading(true)
             setFormError("")
@@ -19,7 +19,6 @@ const ResetPassword = () => {
                 setLoading(false);
                 return;
             }
-
             // Call your API here
             const response = await resetPassword({
                 email: formData.email,
@@ -29,6 +28,9 @@ const ResetPassword = () => {
 
             if (response.success) {
                 setFormError(response.message)
+            } else {
+                alert("Reset Password Link Sent Your Given Email.....🙂")
+                navigate("/login")
             }
 
         } catch (error) {

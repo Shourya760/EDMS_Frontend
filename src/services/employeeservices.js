@@ -17,3 +17,8 @@ export const updateEmployeeData = async (employee_id, data) => {
   });
   return response;
 };
+
+export const fetchRecentThreeEmployees = async () => {
+  const response = await api.get("/getemployee?recentThree=true");
+  return response.data;
+};

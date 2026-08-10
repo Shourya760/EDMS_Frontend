@@ -46,20 +46,6 @@ const Documents = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const getIcon = (type) => {
-    switch (type) {
-      case "PAN Card":
-        return "💳";
-      case "Aadhar Card":
-        return "🪪";
-      case "10th Marksheet":
-        return "🎓";
-      case "12th Marksheet":
-        return "📚";
-      default:
-        return "📄";
-    }
-  };
 
   return (
     <AdminLayout>
@@ -67,21 +53,18 @@ const Documents = () => {
 
         {/* Header */}
 
-        <div className="mb-8 flex items-center justify-between rounded-xl border bg-white p-6 shadow-sm">
+        <div className="mb-8 flex items-center justify-between rounded-xl  bg-white p-6 shadow-sm">
           <div>
             <p className="text-sm font-medium text-blue-600">
               Employee Management
             </p>
-
             <h1 className="mt-1 text-3xl font-bold text-slate-800">
               📂 Document Vault
             </h1>
-
             <p className="mt-2 text-slate-500">
               Browse and manage all uploaded employee documents.
             </p>
           </div>
-
           <div className="rounded-xl bg-blue-50 px-6 py-4 text-center">
             <p className="text-sm text-slate-500">Total Documents</p>
 
@@ -92,7 +75,7 @@ const Documents = () => {
         </div>
 
         {/* Search */}
-        <div className="mb-8 rounded-xl border bg-white p-5 shadow-sm">
+        <div className="mb-8 rounded-xl  bg-white p-5 shadow-sm">
           <div className="grid gap-4 md:grid-cols-2">
 
             <input
@@ -102,7 +85,6 @@ const Documents = () => {
               onChange={(e) => setSearchText(e.target.value)}
               className="rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-blue-600"
             />
-
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
@@ -116,103 +98,111 @@ const Documents = () => {
                 </option>
               ))}
             </select>
-
           </div>
         </div>
+
+
         {/* Cards */}
-
         {filteredDocuments.length === 0 ? (
-
-          <div className="rounded-xl border-2 border-dashed border-slate-300 bg-white py-20 text-center shadow-sm">
-
-            <div className="text-6xl">
-              📂
-            </div>
-
-            <h2 className="mt-4 text-2xl font-semibold text-slate-700">
+          <div className="rounded-lg  bg-white p-10 text-center">
+            <p className="text-lg font-medium text-slate-700">
               No Documents Found
-            </h2>
-
-            <p className="mt-2 text-slate-500">
+            </p>
+            <p className="mt-1 text-sm text-slate-500">
               Try changing your search or filter.
             </p>
-
           </div>
 
         ) : (
 
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="overflow-x-auto rounded-lg  bg-white">
+            <table className="w-full text-left">
+              <thead className=" bg-slate-50">
+                <tr>
+                  <th className="px-4 py-3 text-sm font-medium text-slate-600">
+                    Document
+                  </th>
+                  <th className="px-4 py-3 text-sm font-medium text-slate-600">
+                    Employee
+                  </th>
+                  <th className="px-4 py-3 text-sm font-medium text-slate-600">
+                    Uploaded
+                  </th>
+                  <th className="px-4 py-3 text-sm font-medium text-slate-600">
+                    Status
+                  </th>
+                  <th className="px-4 py-3 text-sm font-medium text-slate-600">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
 
-            {filteredDocuments.map((doc) => (
+              <tbody>
+                {filteredDocuments.map((doc) => (
+                  <tr
+                    key={doc._id}
+                    className=" hover:bg-slate-50"
+                  >
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
 
-              <div
-                key={doc._id}
-                className="rounded-xl  bg-white p-5 shadow-sm hover:shadow-md"
-              >
+                        <div>
+                          <p className="font-medium text-slate-800">
+                            {doc.document_type}
+                          </p>
 
-                <div className="mb-4 flex items-center gap-3">
+                          <p className="max-w-xs  text-sm text-slate-500">
+                            {doc.document_name}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
 
-                  <div className="text-4xl">
-                    {getIcon(doc.document_type)}
-                  </div>
-
-                  <div>
-
-                    <h3 className="font-semibold">
-                      {doc.document_type}
-                    </h3>
-
-                    <p className="text-sm text-slate-500">
-                      Employee Email:
-                      {" "}
+                    <td className="px-4 py-3 text-sm text-slate-600">
                       {doc.document_name.split("_").pop()}
-                    </p>
+                    </td>
 
-                  </div>
+                    <td className="px-4 py-3 text-sm text-slate-500">
+                      {new Date(doc.createdAt).toLocaleDateString()}
+                    </td>
 
-                </div>
+                    <td className="px-3 py-3">
+                      <span
+                        className={
+                          doc.is_verified
+                            ? "text-sm text-green-600"
+                            : "text-sm text-yellow-600"
+                        }
+                      >
+                        {doc.is_verified ? "Verified" : "Pending"}
+                      </span>
+                    </td>
 
-                <div className="rounded-lg bg-slate-100 p-3">
-
-                  <p className="truncate font-medium">
-                    {doc.document_name}
-                  </p>
-
-                  <p className="mt-2 text-sm text-slate-500">
-                    Uploaded :
-                    {" "}
-                    {new Date(doc.createdAt).toLocaleDateString()}
-                  </p>
-
-                </div>
-
-                <div className="mt-5 flex gap-2">
-
-                  <a
-                    href={doc.document_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex-1 rounded-lg bg-blue-600 py-2 text-center text-white hover:bg-blue-700"
-                  >
-                    View
-                  </a>
-
-                  <a
-                    href={doc.document_url}
-                    download
-                    className="flex-1 rounded-lg border py-2 text-center hover:bg-slate-100"
-                  >
-                    Download
-                  </a>
-
-                </div>
-
-              </div>
-
-            ))}
-
+                    <td className="py-3">
+                      <div className="flex gap-7">
+                        <a
+                          href={doc.document_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="rounded  px-3 py-1.5 text-sm hover:bg-slate-100"
+                        >
+                          View
+                        </a>
+                        {!doc.is_verified && (
+                          <button
+                            onClick={() => handleVerify(doc._id)}
+                            className="rounded bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700"
+                          >
+                            Verify
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-
         )}
 
       </div>

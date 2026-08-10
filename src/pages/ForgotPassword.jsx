@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { updatePassword } from "../services/authService";
+import AdminLayout from "../layouts/AdminLayout";
 
 const ForgotPassword = () => {
     const [searchParams] = useSearchParams();
@@ -28,7 +29,7 @@ const ForgotPassword = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            setLoading
+            setLoading(true)
             if (formData.password !== formData.confirmPassword) {
                 alert("Passwords do not match");
                 return;
@@ -42,7 +43,9 @@ const ForgotPassword = () => {
                 })
 
             if (response.success) {
-                navigate("/login");
+                alert("Done Please Login Now.")
+                navigate("/");
+
             } else {
                 alert(response.message)
                 console.log(response.message)
@@ -64,81 +67,48 @@ const ForgotPassword = () => {
 
     if (loading) {
         return (
-            <div>Loading</div>
+
+            <div>Loading.....</div>
+
         )
     }
-
     return (
-        <div
-            style={{
-                minHeight: "100vh",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                background: "#f5f5f5",
-            }}
-        >
-            <form
-                onSubmit={handleSubmit}
-                style={{
-                    width: "400px",
-                    background: "#fff",
-                    padding: "30px",
-                    borderRadius: "10px",
-                    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                }}
-            >
-                <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
-                    Reset Password
-                </h2>
-
-                <div style={{ marginBottom: "15px" }}>
-                    <label>New Password</label>
+        <div className="mx-auto max-w-3xl rounded-xl border border-slate-200 bg-white p-6 mt-7 shadow-sm">
+            <h1 className="mb-6 text-2xl font-bold text-slate-900">
+                Add Department
+            </h1>
+            <form>
+                <div className="mb-4">
+                    <label className="block mb-1">New Password</label>
                     <input
                         type="password"
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
                         placeholder="Enter new password"
-                        style={{
-                            width: "100%",
-                            padding: "10px",
-                            marginTop: "5px",
-                        }}
+                        className="w-full p-2.5 mt-1 border rounded"
                     />
                 </div>
 
-                <div style={{ marginBottom: "20px" }}>
-                    <label>Confirm Password</label>
+                <div className="mb-5">
+                    <label className="block mb-1">Confirm Password</label>
                     <input
                         type="password"
                         name="confirmPassword"
                         value={formData.confirmPassword}
                         onChange={handleChange}
                         placeholder="Confirm new password"
-                        style={{
-                            width: "100%",
-                            padding: "10px",
-                            marginTop: "5px",
-                        }}
+                        className="w-full p-2.5 mt-1 border rounded"
                     />
                 </div>
 
                 <button
                     type="submit"
-                    style={{
-                        width: "100%",
-                        padding: "12px",
-                        border: "none",
-                        borderRadius: "6px",
-                        background: "#2563eb",
-                        color: "#fff",
-                        fontSize: "16px",
-                        cursor: "pointer",
-                    }}
+                    className="w-full p-3 border-0 rounded-md bg-blue-600 text-white text-base cursor-pointer"
                 >
-                    Reset Password
+                    {loading ? "Updating..." : "Reset Password"}
                 </button>
+
             </form>
         </div>
     );

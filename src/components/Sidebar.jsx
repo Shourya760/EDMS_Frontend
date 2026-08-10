@@ -9,6 +9,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     { name: "Departments", path: "/departments", icon: "D" },
     { name: "Documents", path: "/documents", icon: "D" },
     { name: "Managers", path: "/managers", icon: "M" },
+    { name: "Admins", path: "/admins", icon: "A" },
     { name: "Profile", path: "/profile", icon: "P" },
 
   ];

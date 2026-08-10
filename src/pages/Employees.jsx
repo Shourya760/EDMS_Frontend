@@ -6,7 +6,6 @@ import { fetchEmployeeData } from "../services/employeeservices";
 
 const Employees = () => {
   const [searchText, setSearchText] = useState("");
-
   const [employeeData, setEmployeeData] = useState([]);
 
   const navigate = useNavigate();
@@ -46,12 +45,12 @@ const Employees = () => {
 
     <AdminLayout>
       {/* Header */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-6 flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-blue-700">Employee records</p>
-          <h1 className="text-3xl font-bold text-slate-950">Employees</h1>
+          <p className="text-sm  text-blue-700">Employee records</p>
+          <h1 className="text-3xl font-bold text-slate-950">
+            Employees</h1>
         </div>
-
         <Link
           to="/employees/new"
           className="rounded-lg bg-blue-700 px-4 py-2.5 text-center font-semibold text-white shadow-sm transition hover:bg-blue-800"
@@ -76,6 +75,7 @@ const Employees = () => {
         <table className="w-full min-w-[760px] text-sm">
           <thead className="bg-slate-100 text-slate-600">
             <tr>
+              <th className="text-left p-4">Profile</th>
               <th className="text-left p-4">Name</th>
               <th className="text-left p-4">Email</th>
               <th className="text-left p-4">Designation</th>
@@ -90,6 +90,19 @@ const Employees = () => {
                 className="cursor-pointer border-t border-slate-200 hover:bg-slate-50"
                 onClick={() => navigate(`/employees/${employee._id}`)}
               >
+                <td className="p-4 font-medium">
+                  {employee.profile_image ? (
+                    <img
+                      src={employee.profile_image}
+                      alt={employee.name}
+                      className="h-9 w-9 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold text-blue-600">
+                      {employee.name?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </td>
                 <td className="p-4 font-medium text-slate-950">
                   <div className="flex items-center gap-2">
                     <span>{employee.name || "UNKNOWN"}</span>

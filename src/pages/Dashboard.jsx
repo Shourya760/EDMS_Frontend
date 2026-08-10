@@ -1,18 +1,19 @@
 import { Link } from "react-router-dom";
 import AdminLayout from "../layouts/AdminLayout";
 import StatCard from "../components/StatCard";
-import { documents} from "../data/mockData";
+import { documents } from "../data/mockData";
 import { useEffect } from "react";
-import { fetchEmployeeData } from "../services/employeeservices";
+import { fetchEmployeeData, fetchRecentThreeEmployees } from "../services/employeeservices";
 import { fetchAllDepartments } from "../services/departmentservices";
 import { useState } from "react";
+import { getalldocument } from "../services/documentservice";
 
 const Dashboard = () => {
-  const pendingDocuments = documents.filter((doc) => doc.status === "Pending");
-  const verifiedDocuments = documents.filter((doc) => doc.status === "Verified");
-  const completionPercent = Math.round((verifiedDocuments.length / documents.length) * 100);
+
+
   const [employeeData, setEmployeeData] = useState([]);
   const [departmentData, setDepartmentData] = useState([]);
+  const [documentData, setDocumentData] = useState([]);
   const modules = [
     {
       id: 1,
@@ -40,17 +41,22 @@ const Dashboard = () => {
       description: "Manage basic admin profile details.",
     },
   ];
-
+  const pendingDocuments = documentData.filter((doc) => doc.status === false);
+  const verifiedDocuments = documentData.filter((doc) => doc.status === true);
+  const completionPercent = Math.round((verifiedDocuments.length / documentData.length) * 100);
 
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const employees = await fetchEmployeeData();
+        const employees = await fetchRecentThreeEmployees();
         setEmployeeData(employees.data);
 
         const departments = await fetchAllDepartments();
         setDepartmentData(departments.data);
+
+        const document = await getalldocument();
+        setDocumentData(document.data)
       } catch (error) {
         console.log(error);
       }
@@ -61,7 +67,8 @@ const Dashboard = () => {
   console.log(departmentData)
 
 
-  
+
+
   return (
     <AdminLayout>
       <section className="mb-6 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
@@ -170,7 +177,11 @@ const Dashboard = () => {
                     <td className="py-3 font-medium text-slate-900">
                       {employee.name ?? "Unknown"}                    </td>
                     <td className="py-3">
-                      <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+                      <span className={`rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 
+                        ${employee.status
+                          ? "bg-emerald-50 text-emerald-700"
+                          : "bg-red-50 text-red-700"
+                        }`}>
                         {employee.status ? "Active" : "Inactive"}
                       </span>
                     </td>
@@ -216,7 +227,7 @@ const Dashboard = () => {
             ))}
           </div>
         </section> */}
-      </div>
+      </div >
 
       <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-3">
         <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm lg:col-span-2">
@@ -279,7 +290,7 @@ const Dashboard = () => {
           </div>
         </section>
       </div>
-    </AdminLayout>
+    </AdminLayout >
   );
 };
 

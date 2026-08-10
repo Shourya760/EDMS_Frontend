@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "../services/authService";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 
@@ -10,6 +10,7 @@ const Header = ({ onMenuClick }) => {
   const [user, setUser] = useState("");
   const [email, setEmail] = useState("");
   const [profile, setProfile] = useState("");
+  const [status, setStatus] = useState("");
   const navigate = useNavigate()
 
   const getInitials = (name) => {
@@ -31,6 +32,8 @@ const Header = ({ onMenuClick }) => {
         setUser(response.data.name);
         setEmail(response.data.email);
         setProfile(response.data.profile_image);
+        setStatus(response.data.status);
+
       } catch (error) {
         console.error("ERROR IN GETTING USER:", error);
       }
@@ -66,31 +69,35 @@ const Header = ({ onMenuClick }) => {
           </div>
         </div>
 
-        <div
-          className="flex items-center gap-3 cursor-pointer"
-          onClick={() => navigate("/profile")}
+        <Link
+          to="/profile"
+          className="group flex items-center gap-3 rounded-xl px-3 py-2 transition-all duration-300 hover:bg-slate-100"
         >
-          {profile ? (
+          <div className="relative">
             <img
-              src={profile}
-              alt="Profile"
-              className="w-10 h-10 rounded-full object-cover"
+              src={profile || { getInitials }}
+              alt={user || "Profile"}
+              className="h-10 w-10 rounded-full object-cover shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500/30"
             />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold">
-              {getInitials(user)}
-            </div>
-          )}
+            {/* Indication  of Active / Inavtive */}
+            <span
+              className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${status ? "bg-green-500" : "bg-red-500"
+                }`}
+            />
+          </div>
 
           <div className="flex flex-col">
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-semibold text-slate-700 transition-colors duration-300 group-hover:text-blue-600">
               {user || "Guest"}
             </span>
+
             <span className="text-xs text-slate-400">
               {email}
             </span>
           </div>
-        </div>
+        </Link>
+
+
       </div>
     </header>
   );

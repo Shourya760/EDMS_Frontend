@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Router } from "react-router-dom";
 
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -15,11 +15,17 @@ import EmployeeInfo from "../pages/EmployeeInfo";
 import EmployeeEdit from "../pages/EmployeeEdit";
 import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
+import Admins from "../pages/Admin";
+import AdminForm from "../pages/AdminForm";
+
+
+
+
+
 
 const AppRoutes = () => {
   return (
     <Routes>
-
       {/* Unprodected Routes */}
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
@@ -70,7 +76,14 @@ const AppRoutes = () => {
         <ProtectedRoute>
           <Documents />
         </ProtectedRoute>} />
-
+      <Route path="/admins" element={
+        <ProtectedRoute>
+          <Admins />
+        </ProtectedRoute>} />
+      <Route path="/admins/new" element={
+        <ProtectedRoute>
+          <AdminForm />
+        </ProtectedRoute>} />
 
 
       <Route

@@ -53,7 +53,7 @@ const EmployeeInfo = () => {
         if (!confirmed) return;
         try {
             setLoading(true);
-            
+
             console.log(EmployeeInfo._id)
             const response = await api.delete("/deleteemployee",
                 {
@@ -62,6 +62,7 @@ const EmployeeInfo = () => {
                     },
                 });
             if (response.status) {
+                alert("Removed Successfully.......")
                 navigate(-1);
             }
         } catch (error) {
@@ -70,6 +71,7 @@ const EmployeeInfo = () => {
             setLoading(false)
         }
     }
+    
     //Update info
     const handleUpdate = async (updatedFields) => {
         try {
