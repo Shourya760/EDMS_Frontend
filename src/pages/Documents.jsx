@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "../layouts/AdminLayout";
-import { getalldocument } from "../services/documentservice";
+import { getalldocument, verifydocument } from "../services/documentservice";
 
 const Documents = () => {
   const [documents, setDocuments] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [verificationStatus, setVerificationStatus] = useState(false);
 
   const categories = [
     "10th Marksheet",
@@ -28,7 +30,25 @@ const Documents = () => {
     fetchDocuments();
   }, []);
 
+  const handleVerify = async (document_id) => {
+    try {
+      await verifydocument({
+        document_id,
+        verification_status: true,
+      });
 
+      // Update only this document in the UI
+      setDocuments((docs) =>
+        docs.map((doc) =>
+          doc._id === document_id
+            ? { ...doc, verification_status: true }
+            : doc
+        )
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const filteredDocuments = documents.filter((doc) => {
     const matchesSearch =
@@ -52,7 +72,6 @@ const Documents = () => {
       <div className="mx-auto max-w-7xl">
 
         {/* Header */}
-
         <div className="mb-8 flex items-center justify-between rounded-xl  bg-white p-6 shadow-sm">
           <div>
             <p className="text-sm font-medium text-blue-600">
@@ -138,7 +157,7 @@ const Documents = () => {
               </thead>
 
               <tbody>
-                {filteredDocuments.map((doc) => (
+                {filteredDocuments.reverse().map((doc) => (
                   <tr
                     key={doc._id}
                     className=" hover:bg-slate-50"
@@ -159,7 +178,7 @@ const Documents = () => {
                     </td>
 
                     <td className="px-4 py-3 text-sm text-slate-600">
-                      {doc.document_name.split("_").pop()}
+                      {doc.employee_id.name}
                     </td>
 
                     <td className="px-4 py-3 text-sm text-slate-500">
@@ -169,31 +188,35 @@ const Documents = () => {
                     <td className="px-3 py-3">
                       <span
                         className={
-                          doc.is_verified
+                          doc.verification_status
                             ? "text-sm text-green-600"
                             : "text-sm text-yellow-600"
                         }
                       >
-                        {doc.is_verified ? "Verified" : "Pending"}
+                        {doc.verification_status ? "Verified" : "Pending"}
                       </span>
                     </td>
 
                     <td className="py-3">
-                      <div className="flex gap-7">
+                      <div className="flex gap-3">
+                        {/* Always available */}
                         <a
                           href={doc.document_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="rounded  px-3 py-1.5 text-sm hover:bg-slate-100"
+                          className="rounded px-3 py-1.5 text-sm hover:bg-slate-100"
                         >
                           View
                         </a>
-                        {!doc.is_verified && (
+
+                        {/* Only available when pending */}
+                        {!doc.verification_status && (
                           <button
                             onClick={() => handleVerify(doc._id)}
-                            className="rounded bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700"
+                            disabled={loading}
+                            className="rounded bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700 disabled:opacity-50"
                           >
-                            Verify
+                            {loading ? "Verifying..." : "Verify"}
                           </button>
                         )}
                       </div>

@@ -71,7 +71,7 @@ const EmployeeInfo = () => {
             setLoading(false)
         }
     }
-    
+
     //Update info
     const handleUpdate = async (updatedFields) => {
         try {
@@ -192,8 +192,8 @@ const EmployeeInfo = () => {
                                 })
                             }}
                             className={`mt-3 inline-block rounded-full px-4 py-1 text-sm font-medium ${EmployeeInfo.status
-                                ? "bg-emerald-50 text-emerald-700"
-                                : "bg-red-50 text-red-700"
+                                ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-200"
+                                : "bg-red-50 text-red-700 hover:bg-red-200"
                                 }`}
                         >
                             {EmployeeInfo.status ? "Active" : "Inactive"}

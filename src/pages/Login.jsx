@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import api from "../api/axios";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -142,14 +144,29 @@ const Login = () => {
               Password
             </label>
 
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-blue-600"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 pr-12 outline-none focus:border-blue-600"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff size={20} />
+                ) : (
+                  <Eye size={20} />
+                )}
+              </button>
+            </div>
 
             <div className="mt-3 flex justify-end">
 
@@ -173,19 +190,18 @@ const Login = () => {
           </form>
 
           <div className="mt-6 text-center text-sm text-slate-600">
-
-            Don't have an account?{" "}
-
-            <Link
-              to="/register"
+            Need an account? Contact HR.{" "}
+            <a
+              href=""
               className="font-semibold text-blue-700 hover:underline"
             >
-              Register
-            </Link>
+
+              Contact HR.
+            </a>
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

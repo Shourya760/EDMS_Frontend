@@ -32,8 +32,6 @@ const DepartmentForm = () => {
             setLoading(true);
             setFormError("");
 
-            // console.log("form data: ", formData);
-
             const response = await api.post("/department", formData);
 
             // console.log(response);

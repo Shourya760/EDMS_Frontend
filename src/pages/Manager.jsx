@@ -27,7 +27,7 @@ export default function Managers() {
 
             const departments = await fetchAllDepartments();
             setDepartmentData(departments.data);
-
+            
             const managers = await fetchAllManager();
             setManagerData(managers.data);
 

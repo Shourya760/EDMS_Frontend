@@ -77,7 +77,7 @@ const Header = ({ onMenuClick }) => {
             <img
               src={profile || { getInitials }}
               alt={user || "Profile"}
-              className="h-10 w-10 rounded-full object-cover shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500/30"
+              className="h-10 w-10 rounded-full object-cover shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500"
             />
             {/* Indication  of Active / Inavtive */}
             <span

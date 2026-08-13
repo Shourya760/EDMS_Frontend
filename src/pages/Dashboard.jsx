@@ -41,9 +41,11 @@ const Dashboard = () => {
       description: "Manage basic admin profile details.",
     },
   ];
-  const pendingDocuments = documentData.filter((doc) => doc.status === false);
-  const verifiedDocuments = documentData.filter((doc) => doc.status === true);
+  const pendingDocuments = documentData.filter((doc) => doc.verification_status === false);
+  const verifiedDocuments = documentData.filter((doc) => doc.verification_status === true);
   const completionPercent = Math.round((verifiedDocuments.length / documentData.length) * 100);
+
+  const last_three_doc = documentData.slice(-3).reverse();
 
 
   useEffect(() => {
@@ -97,7 +99,7 @@ const Dashboard = () => {
                 to="/documents"
                 className="rounded-lg border border-slate-300 px-5 py-2.5 text-center font-semibold text-slate-700 hover:bg-slate-100"
               >
-                Upload Document
+                View Document
               </Link>
             </div>
           </div>
@@ -146,7 +148,7 @@ const Dashboard = () => {
       </div>
 
 
-      <div className="mt-6  grid-cols-1 gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+      <div className="mt-6 grid  grid-cols-1 gap-5 xl:grid-cols-[1.15fr_0.85fr]">
         <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -172,7 +174,7 @@ const Dashboard = () => {
               </thead>
 
               <tbody>
-                {employeeData.slice(-3).map((employee) => (
+                {employeeData.slice(-4).map((employee) => (
                   <tr key={employee._id} className="border-b border-slate-100">
                     <td className="py-3 font-medium text-slate-900">
                       {employee.name ?? "Unknown"}                    </td>
@@ -193,7 +195,11 @@ const Dashboard = () => {
           </div>
         </section>
 
-        {/* <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        {/* Documents Section */}
+
+
+
+        <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-sm font-medium text-blue-700">Files</p>
@@ -209,24 +215,29 @@ const Dashboard = () => {
             </Link>
           </div>
           <div className="mt-4 space-y-3">
-            {documents.map((doc) => (
+            {last_three_doc.map((doc) => (
               <div
-                key={doc.id}
+                key={doc._id}
                 className="flex items-center justify-between gap-4 rounded-lg border border-slate-200 p-3"
               >
                 <div>
-                  <p className="font-medium text-slate-950">{doc.documentName}</p>
+                  <p className="font-medium text-slate-950">{doc.document_type}</p>
                   <p className="text-sm text-slate-500">
-                    {doc.employee} - {doc.uploadDate}
+                    {doc.employee_id?.name || "Unknown Employee"}{" "} - {new Date(doc.updatedAt).toLocaleDateString()}
                   </p>
                 </div>
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
-                  {doc.status}
+                <span className={`rounded-full  px-3 py-1 text-xs font-medium  
+                ${doc.verification_status
+                    ? "bg-emerald-100 text-emerald-700 "
+                    : "bg-yellow-100 text-yellow-700"
+                  }`}>
+                  {doc.verification_status ? "Verfied" : "Pending"}
                 </span>
               </div>
             ))}
           </div>
-        </section> */}
+        </section>
+
       </div >
 
       <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-3">
