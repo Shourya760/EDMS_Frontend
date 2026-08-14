@@ -22,3 +22,11 @@ export const fetchRecentThreeEmployees = async () => {
   const response = await api.get("/getemployee?recentThree=true");
   return response.data;
 };
+
+// New Service 
+
+export const fetchNonManagers = async () => {
+  const responce = await api.get("/getemployee?is_manager=false")
+  return responce.data;
+
+}

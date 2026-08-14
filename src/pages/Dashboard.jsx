@@ -10,7 +10,7 @@ import { getalldocument } from "../services/documentservice";
 
 const Dashboard = () => {
 
-
+  const [allEmployeeData, setAllEmployeeData] = useState([]);
   const [employeeData, setEmployeeData] = useState([]);
   const [departmentData, setDepartmentData] = useState([]);
   const [documentData, setDocumentData] = useState([]);
@@ -51,6 +51,9 @@ const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
+        const allEmployeeData = await fetchEmployeeData();
+        setAllEmployeeData(allEmployeeData.data);
+
         const employees = await fetchRecentThreeEmployees();
         setEmployeeData(employees.data);
 
@@ -132,7 +135,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
         <StatCard
           title="Employees"
-          value={employeeData.length}
+          value={allEmployeeData.length}
           note="Central employee records"
         />
         <StatCard
