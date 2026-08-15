@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "../layouts/AdminLayout";
-import { fetchEmployeeData } from "../services/employeeservices";
+import { fetchEmployeeData, fetchNonManagers } from "../services/employeeservices";
 import { fetchAllDepartments } from "../services/departmentservices";
-
+import { Cross, X, XCircle } from "lucide-react";
 import api from "../api/axios";
 import { fetchAllManager } from "../services/managerServices";
 
 export default function Managers() {
+    const [nonManagersData, setSetNonManager] = useState([]);
 
-    const [employeeData, setEmployeeData] = useState([]);
     const [departmentData, setDepartmentData] = useState([]);
     const [managerData, setManagerData] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -19,17 +19,16 @@ export default function Managers() {
         employee_id: "",
     });
 
-
     const loadData = async () => {
         try {
-            const employees = await fetchEmployeeData();
-            setEmployeeData(employees.data);
-
             const departments = await fetchAllDepartments();
             setDepartmentData(departments.data);
-            
+
             const managers = await fetchAllManager();
             setManagerData(managers.data);
+
+            const nonmanagers = await fetchNonManagers();
+            setSetNonManager(nonmanagers.data);
 
             setShowModal(false);
         } catch (error) {
@@ -39,10 +38,19 @@ export default function Managers() {
 
     useEffect(() => {
         loadData();
+
     }, []);
 
 
-    console.log(employeeData, departmentData, managerData)
+    console.log("non managers", nonManagersData)
+    // const [nonManagerDeptData, setNonManagerDeptData] = useState([]);
+    // const nonManagerDept = departmentData.filter(
+    //     (dept) => dept.department_manager_id === null
+    // );
+    // setNonManagerDeptData(nonManagerDept);
+
+    // console.log("non manager department", nonManagerDeptData);
+
 
 
     const handleChange = (e) => {
@@ -186,10 +194,10 @@ export default function Managers() {
 
                             <button
                                 onClick={() => setShowModal(false)}
-                                className="text-2xl text-green-500 "
+                                className="text-4xl text-gray-400 "
 
                             >
-                                ×
+                                <X />
                             </button>
                         </div>
 
@@ -218,7 +226,9 @@ export default function Managers() {
                                 >
                                     <option value="">Select Department</option>
 
-                                    {departmentData.map((department) => (
+                                    {departmentData.filter(
+                                        (dept) => dept.department_manager_id === null
+                                    ).map((department) => (
                                         <option
                                             key={department._id}
                                             value={department._id}
@@ -243,7 +253,7 @@ export default function Managers() {
                                 >
                                     <option value="">Select Employee</option>
 
-                                    {employeeData.map((employee) => (
+                                    {nonManagersData.map((employee) => (
                                         <option
                                             key={employee._id}
                                             value={employee._id}
@@ -252,15 +262,13 @@ export default function Managers() {
                                         </option>
                                     ))}
                                 </select>
-
-
                             </div>
 
                             <div className="flex justify-end gap-3 pt-4">
 
                                 <button
                                     onClick={() => setShowModal(false)}
-                                    className="rounded-lg border border-slate-300 px-4 py-2"
+                                    className="rounded-lg border border-slate-300 px-4 py-2 hover:bg-gray-200"
                                 >
                                     Cancel
                                 </button>

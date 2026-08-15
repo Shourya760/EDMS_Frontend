@@ -1,11 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AdminLayout from "../layouts/AdminLayout";
 import { useEffect, useState } from "react";
-import { getAllUsers, updateUser } from "../services/authService";
+import { getAllUsers, updateUserStatus } from "../services/authService";
 import Skeleton_Loading from "../components/Skeleton_loading";
 
 const Admins = () => {
-    const navigate = useNavigate();
     const [adminsData, setAdminsData] = useState([]);
     const [formError, setFormError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -30,27 +29,20 @@ const Admins = () => {
         event.preventDefault();
 
         try {
+            setFormError("");
             setLoading(true);
 
-            const formData = new FormData();
-            formData.append("id", admin._id);
-
-            formData.append(
-                "data",
-                JSON.stringify({
-                    status: !admin.status,
-                })
-            );
-
-            const response = await updateUser(formData);
+            const response = await updateUserStatus(admin._id, !admin.status);
 
             if (response.success) {
-                admin.status = !admin.status;
+                setAdminsData((admins) => admins.map((item) =>
+                    item._id === admin._id ? { ...item, status: response.data.status } : item
+                ));
             }
 
         } catch (error) {
             console.log("Error while updating admin status =>", error);
-
+            setFormError(error.response?.data?.message || "Could not update admin status. Check that the backend is running.");
 
         } finally {
             setLoading(false);
@@ -80,6 +72,12 @@ const Admins = () => {
                     Add Admin
                 </Link>
             </div>
+
+            {formError && (
+                <div className="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                    {formError}
+                </div>
+            )}
 
             {/* Admins List */}
             <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">

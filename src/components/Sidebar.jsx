@@ -1,17 +1,19 @@
+
+import { Building2, FileText, Home, ShieldCheck, UserCircle, Users, UserStar } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
 
-  const links = [
-    { name: "Dashboard", path: "/dashboard", icon: "D" },
-    { name: "Employees", path: "/employees", icon: "E" },
-    { name: "Departments", path: "/departments", icon: "D" },
-    { name: "Documents", path: "/documents", icon: "D" },
-    { name: "Managers", path: "/managers", icon: "M" },
-    { name: "Admins", path: "/admins", icon: "A" },
-    { name: "Profile", path: "/profile", icon: "P" },
 
+  const links = [
+    { name: "Dashboard", path: "/dashboard", icon: <Home/> },
+    { name: "Employees", path: "/employees", icon: <Users /> },
+    { name: "Departments", path: "/departments", icon: <Building2 /> },
+    { name: "Documents", path: "/documents", icon: <FileText /> },
+    { name: "Managers", path: "/managers", icon: <UserStar /> },
+    { name: "Admins", path: "/admins", icon: <ShieldCheck/> },
+    { name: "Profile", path: "/profile", icon: <UserCircle /> },
   ];
 
   return (
@@ -36,7 +38,6 @@ const Sidebar = ({ isOpen, onClose }) => {
             </p>
           </div>
 
-
         </div>
 
         <nav className="flex flex-1 flex-col gap-2 p-5">
@@ -48,11 +49,11 @@ const Sidebar = ({ isOpen, onClose }) => {
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive
                   ? "bg-blue-600 text-white"
-                  : "text-slate-300 hover:bg-white/10 hover:text-white"
+                  : " hover:bg-white/10 "
                 }`
               }
             >
-              <span className="grid h-7 w-7 place-items-center rounded-md bg-white/10 text-xs">
+              <span className="grid h-7 w-7 place-items-center rounded-md text-xs">
                 {link.icon}
               </span>
               {link.name}

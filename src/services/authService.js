@@ -24,6 +24,11 @@ export const updateUser = async (formData) => {
     return response.data;
 }
 
+export const updateUserStatus = async (userId, status) => {
+    const response = await api.patch(`/auth/users/${userId}/status`, { status });
+    return response.data;
+};
+
 
 
 export const updatePassword = async (formData) => {
