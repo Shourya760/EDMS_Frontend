@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 
 const Header = ({ onMenuClick }) => {
-
+  
   const [user, setUser] = useState("");
   const [email, setEmail] = useState("");
   const [profile, setProfile] = useState("");

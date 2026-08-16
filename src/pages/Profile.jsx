@@ -52,11 +52,18 @@ const Profile = () => {
         form.append("profile_image", image);
       }
 
-      await updateUser(form);
+      const update_responce = await updateUser(form);
+      
+      if (update_responce) {
+        alert("Updated ✅")
+      }
+
+
       await loadUser();
 
       setImage(null);
       setEdit(false);
+
     } catch (error) {
       console.log(error);
     } finally {
