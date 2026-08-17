@@ -53,7 +53,7 @@ const Profile = () => {
       }
 
       const update_responce = await updateUser(form);
-      
+
       if (update_responce) {
         alert("Updated ✅")
       }
@@ -156,7 +156,7 @@ const Profile = () => {
                 type="file"
                 accept="image/*"
                 onChange={(e) => setImage(e.target.files[0])}
-                className="mt-4 w-full text-sm"
+                className="mt-4  rounded-xl shadow-sm px-3 py-2 bg-gray-100 hover:shadow-md hover:bg-gray-10"
               />
             )}
 
