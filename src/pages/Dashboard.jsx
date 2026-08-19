@@ -69,9 +69,8 @@ const Dashboard = () => {
 
     loadData();
   }, []);
+
   console.log(departmentData)
-
-
 
 
   return (
