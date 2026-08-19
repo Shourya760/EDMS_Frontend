@@ -10,7 +10,6 @@ api.interceptors.request.use((config) => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
-
     return config;
 });
 
@@ -24,8 +23,6 @@ api.interceptors.response.use(
             // Remove the expired token
             localStorage.removeItem("token");
             localStorage.removeItem("user");
-
-
             // Redirect to login
             window.location.replace("/login");
         }
@@ -33,8 +30,6 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-
-
 
 
 export default api;
