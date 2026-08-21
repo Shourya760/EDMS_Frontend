@@ -178,7 +178,7 @@ const Documents = () => {
                     </td>
 
                     <td className="px-4 py-3 text-sm text-slate-600">
-                      {doc.employee_id.name}
+                      {doc.employee_id?.name}
                     </td>
 
                     <td className="px-4 py-3 text-sm text-slate-500">

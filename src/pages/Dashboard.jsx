@@ -179,7 +179,8 @@ const Dashboard = () => {
                 {employeeData.slice(-4).map((employee) => (
                   <tr key={employee._id} className="border-b border-slate-100">
                     <td className="py-3 font-medium text-slate-900">
-                      {employee.name ?? "Unknown"}                    </td>
+                      {employee.name ?? "Unknown"}
+                    </td>
                     <td className="py-3">
                       <span className={`rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 
                         ${employee.status
@@ -198,8 +199,6 @@ const Dashboard = () => {
         </section>
 
         {/* Documents Section */}
-
-
 
         <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between gap-4">
@@ -287,7 +286,7 @@ const Dashboard = () => {
                       {department.department_name}
                     </span>
                     <span className="text-slate-500">
-                      20 people
+                      209 people
                       {/* {departmentData.employee} */}
                     </span>
                   </div>

@@ -17,8 +17,6 @@ export const getCurrentUser = async () => {
     return response.data;
 };
 
-
-
 export const updateUser = async (formData) => {
     const response = await api.patch("/auth/updateUser", formData);
     return response.data;

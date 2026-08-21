@@ -23,10 +23,12 @@ export const fetchRecentThreeEmployees = async () => {
   return response.data;
 };
 
-// New Service 
-
 export const fetchNonManagers = async () => {
   const responce = await api.get("/getemployee?is_manager=false")
   return responce.data;
-
 }
+
+export const uploadManyEmployees = async (file) => {
+  const responce = await api.post("/createmanyemployee", file)
+  return responce.data;
+} 
