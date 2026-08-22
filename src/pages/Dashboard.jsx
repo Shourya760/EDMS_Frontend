@@ -274,7 +274,6 @@ const Dashboard = () => {
               Department load
             </h2>
           </div>
-
           <div className="space-y-4">
             {departmentData.slice(0, 4).map((department) => {
               const percent = Math.min(department.employees * 2, 100);
@@ -287,7 +286,7 @@ const Dashboard = () => {
                     </span>
                     <span className="text-slate-500">
                       209 people
-                      {/* {departmentData.employee} */}
+                      
                     </span>
                   </div>
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
